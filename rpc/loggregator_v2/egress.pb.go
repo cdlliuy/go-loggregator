@@ -687,17 +687,22 @@ func (x *egressReceiverClient) Recv() (*Envelope, error) {
 }
 
 func (c *egressClient) BatchedReceiver(ctx context.Context, in *EgressBatchRequest, opts ...grpc.CallOption) (Egress_BatchedReceiverClient, error) {
+	fmt.Println("before  BatchedReceiver-grpc.NewClientStream")
 	stream, err := c.cc.NewStream(ctx, &_Egress_serviceDesc.Streams[1], "/loggregator.v2.Egress/BatchedReceiver", opts...)
+	fmt.Println("after  BatchedReceiver-grpc.NewClientStream")
 	if err != nil {
 		return nil, err
 	}
 	x := &egressBatchedReceiverClient{stream}
+	fmt.Println("before  BatchedReceiver-SendMsg")
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
+	fmt.Println("after  BatchedReceiver-SendMsg")
 	if err := x.ClientStream.CloseSend(); err != nil {
 		return nil, err
 	}
+	fmt.Println("after  BatchedReceiver-closesend")
 	return x, nil
 }
 

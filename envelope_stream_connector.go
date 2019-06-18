@@ -3,6 +3,7 @@ package loggregator
 import (
 	"context"
 	"crypto/tls"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"time"
@@ -163,11 +164,15 @@ func newStream(
 
 func (s *stream) recv() []*loggregator_v2.Envelope {
 	for {
+		fmt.Println("before connecting")
 		ok := s.connect(s.ctx)
+		fmt.Println("after connecting")
 		if !ok {
 			return nil
 		}
+		fmt.Println("before recv")
 		batch, err := s.rx.Recv()
+		fmt.Println("after connecting")
 		if err != nil {
 			s.rx = nil
 			continue
@@ -188,11 +193,13 @@ func (s *stream) connect(ctx context.Context) bool {
 			}
 
 			var err error
+			fmt.Println("before connecting-BatchedReceiver")
 			s.rx, err = s.client.BatchedReceiver(
 				ctx,
 				s.req,
 			)
 
+			fmt.Println("after connecting-BatchedReceiver")
 			if err != nil {
 				s.log.Printf("Error connecting to Logs Provider: %s", err)
 				time.Sleep(50 * time.Millisecond)
