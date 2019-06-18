@@ -172,8 +172,9 @@ func (s *stream) recv() []*loggregator_v2.Envelope {
 		}
 		fmt.Println("before recv")
 		batch, err := s.rx.Recv()
-		fmt.Println("after connecting")
+		fmt.Println("after recv")
 		if err != nil {
+			fmt.Printf("%v\n", err)
 			s.rx = nil
 			continue
 		}
